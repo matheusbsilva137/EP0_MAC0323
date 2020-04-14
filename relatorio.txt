@@ -1,0 +1,27 @@
+Nome: Matheus Barbosa Silva
+NUSP: 11221741
+Relatório do EP0 de MAC0323 - Prof. Carlos Eduardo Ferreira
+
+Estrutura de Dados utilizada: Fila;
+	Neste EP, implementei uma fila a partir de uma lista ligada de células. Optei por realizar inserções em qualquer posição da fila de acordo com uma dada prioridade identificada, usando para isso um apontador para a célula predecessora à nova célula que será inserida, ainda que priorize inserções na extremidade inferior da fila (como é usualmente feito).
+	Cada vôo que chega com informações à torre de comando é analisado quanto ao seu tempo de combustível e/ou tempo de vôo e é, então, destinado a uma fila correspondente a alguma das pistas.
+	A melhor posição para a inserção de um vôo em uma fila é aquela que gera menos emergências, que menos altera a ordem padrão do instante de contato e que passa na frente do menor número possível de vôos.
+
+Dinâmica de Inserção de Vôos nas Fila
+	Cada pista (1, 2 ou 3) tem suas informações quanto ao estado atual de utilização, vôo em operação e sua fila de aviões. Para determinar a melhor posição para a inserção de uma célula (que contém um vôo) em uma fila, primeiro verifico se o vôo correspondente é de emergência ou se não tem combustível suficiente para aguardar no final da fila.
+	*Em casos de emergência ou quando não há combustível suficiente para aguardar no fim da fila: percorro cada uma das filas (das pistas) identificando a posição mais adequada para a inserção do vôo nesta fila. A prioridade é sempre evitar que os vôos pousem em situação de emergência ou que caiam antes de pousar. Em pousos, priorizo as pistas 1 e 2, usando a pista 3 apenas em casos de emergência. Os casos de emergência ficam dispostos na extremidade superior da fila ordenados pela quantidade de combustível, enquanto o restante da fila segue ordenado de acordo com o instante de contato com a torre de comando. Os pousos de emergência têm prioridade sobre as decolagens, e quando não é possível atender este pouso em nenhuma das três pistas (ou quando inserir este vôo em outra posição na fila causaria emergências) mesmo com as prioridades dadas, o vôo é redirecionado para um aeroporto vizinho.
+	Todo este processo é controlado pela manipulação dos tamanhos atuais das filas e pelas funções getTempoEspera e conteEmergencias.
+	*Em Decolagens: priorizo o uso da pista 3, tentando assim deixar as demais pistas mais livres para possíveis pousos de emergência. Os vôos sao apenas enfileirados quando o tempo de espera não excede 10% do tempo de vôo. Caso contrário, este é encaixado em outra posição na fila de modo que não gere mais emergências ou atrase inadequadamente os demais vôos. A prioridade é sempre inserir a decolagem no fim de qualquer uma das filas (desde que isso não ultrapasse o tempo máximo de espera) do que "furar" alguma delas.
+	*Nos demais casos: apenas enfileiro a célula na pista com menor tempo de espera.
+
+ENTRADA DE DADOS POR ARQUIVO
+A entrada de dados é dada na ordem:
+tempo de Simulação
+quantidade de Registros no instante i
+i linhas na ordem:
+codigo da companhia aerea (1 a 5), tempo de combustível, booleano pouso, codigo do aeroporto (1 a 31), tempo de vôo, booleano emergência.
+
+OBS.: ao receber os dados, interpreto os casos onde os aviões que desejam pousar com tempo de combustível menor ou igual a três como casos de emergência, garantindo-os uma maior prioridade na fila e evitando, assim, o aumento do número de pousos de emergência.
+OBS.(2): como defini uma prioridade de forma a evitar pousos de emrgência (mesmo que o pouso pudesse ser realizado com zero unidades de tempo de combustível), há algumas divergências nos resultados do exemplo 3 esperados e os resultados obtidos pelo programa. Acredito que esta mudança não interfira na consistência e eficiência dos resultados.
+
+TEMPLATES: optei por não usá-los, pois essa implementação implicaria na necessidade de escrever todo o código em um só arquivo (como o Professor disse em aula), o que provavelmente dificultaria a verificação do código para a avaliação.
